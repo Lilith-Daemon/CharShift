@@ -27,14 +27,14 @@
 #include "kaleidoscope/plugin.h"                // for Plugin
 
 namespace ICS_KEYS{
-void ICS_KEYS();
+void ICS_KEYS() __attribute__((weak));
 }
 namespace NCS_KEYS{
 enum class KEY_ID : uint8_t;
-void NCS_KEYS();
+void NCS_KEYS() __attribute__((weak));
 }
 namespace ECS_KEYS{
-void ECS_KEYS();
+void ECS_KEYS() __attribute__((weak));
 }
 
 namespace kaleidoscope {
