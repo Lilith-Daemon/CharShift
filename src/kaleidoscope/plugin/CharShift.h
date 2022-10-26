@@ -123,3 +123,25 @@ class CharShift : public Plugin {
 } // namespace plugins
 
 extern kaleidoscope::plugins::CharShift CharShift;
+
+/// Define an array of `KeyPair` objects in PROGMEM
+///
+/// This preprocessor macro takes a list of `KeyPair` objects as arguments, and
+/// defines them as an array in PROGMEM, and configures `CharShift` to use that
+/// array, automatically setting the count correctly to prevent out-of-bounds
+/// lookups.
+#define CS_KEYS(keypairs...)                                                     \
+  {                                                                              \
+    static kaleidoscope::plugin::CharShift::KeyPair const kp_table[] PROGMEM = { \
+      keypairs};                                                                 \
+    CharShift.setProgmemKeyPairs(kp_table);                                      \
+  }
+
+/// Define an `KeyPair` entry in a keymap
+///
+/// This defines a `Key` object that will be handled by the CharShift plugin.
+/// The argument `n` is the index number of the `KeyPair` in the array (starting
+/// at zero).
+constexpr kaleidoscope::Key CS(uint8_t n) {
+  return kaleidoscope::Key(kaleidoscope::ranges::CS_FIRST + n);
+}
