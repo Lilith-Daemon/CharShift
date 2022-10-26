@@ -1,5 +1,5 @@
 /* -*- mode: c++ -*-
- * Kaleidoscope-NamedCharShift -- Independently assign shifted and unshifted symbols
+ * Kaleidoscope-CharShift -- Independently assign shifted and unshifted symbols
  * Copyright (C) 2021  Keyboard.io, Inc
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -15,7 +15,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "kaleidoscope/plugin/NamedCharShift.h"
+#include "kaleidoscope/plugin/CharShift.h"
 
 #include <Arduino.h>                   // for F, __FlashStringHelper
 #include <Kaleidoscope-FocusSerial.h>  // for Focus, FocusSerial
@@ -32,6 +32,16 @@
 #include "kaleidoscope/keyswitch_state.h"                 // for keyToggledOff
 #include "kaleidoscope/progmem_helpers.h"                 // for cloneFromProgmem
 
+#ifdef ICS_KEYS
+#undef ICS_KEYS
+#endif
+#ifdef NCS_KEYS
+#undef NCS_KEYS
+#endif
+#ifdef ECS_KEYS
+#undef ECS_KEYS
+#endif
+
 namespace kaleidoscope {
 namespace plugins {
 
@@ -39,19 +49,22 @@ namespace plugins {
 // Event handlers
 
 // -----------------------------------------------------------------------------
-EventHandlerResult NamedCharShift::onSetup() {
-  lilith_gen_named_char_shift::setup();
+EventHandlerResult CharShift::onSetup() {
+  if(ICS_KEYS::ICS_KEYS) ICS_KEYS::ICS_KEYS();
+  if(NCS_KEYS::NCS_KEYS) NCS_KEYS::NCS_KEYS();
+  if(ECS_KEYS::ECS_KEYS) ECS_KEYS::ECS_KEYS();
+
   return EventHandlerResult::OK;
 }
 
 // -----------------------------------------------------------------------------
-EventHandlerResult NamedCharShift::onNameQuery() {
-  return ::Focus.sendName(F("NamedCharShift"));
+EventHandlerResult CharShift::onNameQuery() {
+  return ::Focus.sendName(F("CharShift"));
 }
 
 // -----------------------------------------------------------------------------
-EventHandlerResult NamedCharShift::onKeyEvent(KeyEvent &event) {
-  // If the event is for anything other than an NamedCharShift key, we ignore it.
+EventHandlerResult CharShift::onKeyEvent(KeyEvent &event) {
+  // If the event is for anything other than an CharShift key, we ignore it.
   if (!isCharShiftKey(event.key)) {
     // If this event is for a Keyboard key, we need to stop
     // `beforeReportingState()` from suppressing `shift` keys.
@@ -63,7 +76,7 @@ EventHandlerResult NamedCharShift::onKeyEvent(KeyEvent &event) {
   // Default to not suppressing `shift` modifiers.
   reverse_shift_state_ = false;
 
-  // It shouldn't be possible for an NamedCharShift key to toggle off, because it
+  // It shouldn't be possible for an CharShift key to toggle off, because it
   // will get replaced by on of its `KeyPair` values when it toggles on, but just
   // in case, we exit early if that happens.
   if (keyToggledOff(event.state))
@@ -100,7 +113,7 @@ EventHandlerResult NamedCharShift::onKeyEvent(KeyEvent &event) {
 }
 
 // -----------------------------------------------------------------------------
-EventHandlerResult NamedCharShift::beforeReportingState(const KeyEvent &event) {
+EventHandlerResult CharShift::beforeReportingState(const KeyEvent &event) {
   // If `onKeyEvent()` has signalled that `shift` should be suppressed, this is
   // the time to do it.  We can't do it in `onKeyEvent()`, because the new
   // Keyboard HID report hasn't been prepared yet there.
@@ -114,11 +127,11 @@ EventHandlerResult NamedCharShift::beforeReportingState(const KeyEvent &event) {
 // =============================================================================
 // Support functions
 
-bool NamedCharShift::isCharShiftKey(Key key) {
+bool CharShift::isCharShiftKey(Key key) {
   return (key >= ranges::CS_FIRST && key <= ranges::CS_LAST);
 }
 
-NamedCharShift::KeyPair NamedCharShift::decodeCharShiftKey(Key key) {
+CharShift::KeyPair CharShift::decodeCharShiftKey(Key key) {
   uint8_t i = key.getRaw() - ranges::CS_FIRST;
   if (i < numKeyPairs()) {
     return readKeyPair(i);
@@ -129,26 +142,26 @@ NamedCharShift::KeyPair NamedCharShift::decodeCharShiftKey(Key key) {
 // This should be overridden if the KeyPairs array is stored in EEPROM
 __attribute__((weak))
 uint8_t
-NamedCharShift::numKeyPairs() {
+CharShift::numKeyPairs() {
   return numProgmemKeyPairs();
 }
 
 // This should be overridden if the KeyPairs array is stored in EEPROM
 __attribute__((weak))
-NamedCharShift::KeyPair
-NamedCharShift::readKeyPair(uint8_t n) {
+CharShift::KeyPair
+CharShift::readKeyPair(uint8_t n) {
   return readKeyPairFromProgmem(n);
 }
 
-uint8_t NamedCharShift::numProgmemKeyPairs() {
+uint8_t CharShift::numProgmemKeyPairs() {
   return num_keypairs_;
 }
 
-NamedCharShift::KeyPair NamedCharShift::readKeyPairFromProgmem(uint8_t n) {
+CharShift::KeyPair CharShift::readKeyPairFromProgmem(uint8_t n) {
   return cloneFromProgmem(progmem_keypairs_[n]);
 }
 
 }  // namespace plugins
 }  // namespace kaleidoscope
 
-kaleidoscope::plugins::NamedCharShift NamedCharShift;
+kaleidoscope::plugins::CharShift CharShift;

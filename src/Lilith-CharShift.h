@@ -17,4 +17,7 @@
 
 #pragma once
 
-#include "kaleidoscope/plugin/NamedCharShift.h"  // IWYU pragma: export
+#include "kaleidoscope/plugin/CharShift.h"  // IWYU pragma: export
+#include "kaleidoscope/plugin/macro_ics.h"  // IWYU pragma: export
+#include "kaleidoscope/plugin/macro_ncs.h"  // IWYU pragma: export
+#include "kaleidoscope/plugin/macro_ecs.h"  // IWYU pragma: export

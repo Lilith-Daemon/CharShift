@@ -1,5 +1,6 @@
-/* Kaleidoscope - Firmware for computer input devices
- * Copyright (C) 2022  kaleidoscope Daemon
+/* -*- mode: c++ -*-
+ * Kaleidoscope-CharShift -- Independently assign shifted and unshifted symbols
+ * Copyright (C) 2022  Keyboard.io, Inc
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -24,17 +25,22 @@
 #include "kaleidoscope/event_handler_result.h"  // for EventHandlerResult
 #include "kaleidoscope/key_defs.h"              // for Key
 #include "kaleidoscope/plugin.h"                // for Plugin
-#include "kaleidoscope/macro_map.h"
 
-namespace lilith_gen_named_char_shift{
+namespace ICS_KEYS{
+void ICS_KEYS();
+}
+namespace NCS_KEYS{
 enum class KEY_ID : uint8_t;
-void setup();
+void NCS_KEYS();
+}
+namespace ECS_KEYS{
+void ECS_KEYS();
 }
 
 namespace kaleidoscope {
 namespace plugins {
 
-class NamedCharShift : public Plugin {
+class CharShift : public Plugin {
 
  public:
   EventHandlerResult onSetup();
@@ -116,39 +122,4 @@ class NamedCharShift : public Plugin {
 } // namespace kaleidoscope
 } // namespace plugins
 
-extern kaleidoscope::plugins::NamedCharShift NamedCharShift;
-
-#define MAP_TUPLES0(f, x, peek, ...) f x MAP_NEXT(peek, MAP_TUPLES1)(f, peek, __VA_ARGS__)
-#define MAP_TUPLES1(f, x, peek, ...) f x MAP_NEXT(peek, MAP_TUPLES0)(f, peek, __VA_ARGS__)
-#define MAP_TUPLES(f, ...) EVAL(MAP_TUPLES1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
-
-#define NCS_ENUM_ENTRY(name,unshift,shift)                                                  \
-  name,
-
-#define NCS_KEY_CODE_ENTRY(name,unshift,shift)                                              \
-  kaleidoscope::plugins::NamedCharShift::KeyPair(unshift, shift),
-
-#define NCS_KEYS(...)                                                                       \
-namespace lilith_gen_named_char_shift{                                                      \
-enum class KEY_ID : uint8_t {                                                               \
-  MAP_TUPLES(NCS_ENUM_ENTRY, __VA_ARGS__)                                                   \
-};                                                                                          \
-void setup() {                                                                              \
-  static kaleidoscope::plugins::NamedCharShift::KeyPair const kp_table[] PROGMEM = {        \
-    MAP_TUPLES(NCS_KEY_CODE_ENTRY, __VA_ARGS__)                                             \
-  };                                                                                        \
-  NamedCharShift.setProgmemKeyPairs(kp_table);                                              \
-}                                                                                           \
-} /* namespace lilith_gen_named_char_shift */
-
-#define NCS(name)                                                                           \
-  NCS_RESOLVE_KEY_CODE((uint8_t)lilith_gen_named_char_shift::KEY_ID::name)
-
-/// Define an `KeyPair` entry in a keymap
-///
-/// This defines a `Key` object that will be handled by the CharShift plugin.
-/// The argument `n` is the index number of the `KeyPair` in the array (starting
-/// at zero).
-constexpr kaleidoscope::Key NCS_RESOLVE_KEY_CODE(uint8_t n) {
-  return kaleidoscope::Key(kaleidoscope::ranges::CS_FIRST + n);
-}
+extern kaleidoscope::plugins::CharShift CharShift;
