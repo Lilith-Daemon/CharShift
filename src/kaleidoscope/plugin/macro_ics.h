@@ -1,5 +1,5 @@
 /* -*- mode: c++ -*-
- * Kaleidoscope-CharShift -- Independently assign shifted and unshifted symbols
+ * Lilith-CharShift -- Independently assign shifted and unshifted symbols
  * Index keyed macros for the CharShift plugin
  * Copyright (C) 2022 Lilith Daemon
  *

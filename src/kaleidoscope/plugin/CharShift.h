@@ -1,5 +1,5 @@
 /* -*- mode: c++ -*-
- * Kaleidoscope-CharShift -- Independently assign shifted and unshifted symbols
+ * Lilith-CharShift -- Independently assign shifted and unshifted symbols
  * Copyright (C) 2022  Keyboard.io, Inc
  *
  * This program is free software: you can redistribute it and/or modify it under

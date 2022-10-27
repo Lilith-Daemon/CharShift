@@ -1,6 +1,6 @@
 /* -*- mode: c++ -*-
- * Kaleidoscope-CharShift -- Independently assign shifted and unshifted symbols
- * Copyright (C) 2021  Keyboard.io, Inc
+ * Lilith-CharShift -- Independently assign shifted and unshifted symbols
+ * Copyright (C) 2022 Lilith Daemon
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
